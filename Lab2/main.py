@@ -13,55 +13,63 @@ image_directory = './pics/'
 # List all TIFF files in the directory and create an array
 tif_files = [os.path.join(image_directory, filename) for filename in os.listdir(image_directory) if filename.endswith('.tif')]
 images = []
+hist_val = []
+hist_cnt = []
 
-value_counts = {}
+# Create a figure for the subplots
+fig, axes = plt.subplots(len(tif_files), 2, figsize=(12, 6 * len(tif_files)))
 
 # Loop through and display all TIFF images
 for i, file_path in enumerate(tif_files):
     try:
         # Open the TIFF file
         tif_image = io.imread(file_path)
+        value_counts = {}
         
         # Convert the TIFF image to grayscale (if not already)
         if tif_image.ndim == 3:  # Check if the image has multiple channels
             tif_image_gray = color.rgb2gray(tif_image)
         else:
             tif_image_gray = tif_image
+
+        pixel_values = tif_image_gray.flatten()
+
+        for pixel_value in pixel_values:
+            if pixel_value in value_counts:
+                value_counts[pixel_value] += 1
+            else:
+                value_counts[pixel_value] = 1
+
+        values = np.array(list(value_counts.keys()))
+        counts = np.array(list(value_counts.values()))
         
         # Append the grayscale TIFF image to the images array
-        images.append(tif_image_gray)  
+        images.append(tif_image_gray)
+        # Append values and counts of the image to corresponding array
+        hist_val.append(values)
+        hist_cnt.append(counts)
         
         # Create a subplot for each image
-        plt.subplot(1, 3, i + 1)  # 1 row, 3 columns for a 1x3 grid
-        plt.imshow(tif_image_gray, cmap='gray')
-        plt.title(f"Image {i + 1}")
-        plt.axis('off')
+        axes[i, 0].imshow(tif_image_gray, cmap='gray')
+        axes[i, 0].set_title(f"Image {i + 1}")
+        axes[i, 0].axis('off')
+        
+        # Create a histogram subplot for the image
+        axes[i, 1].hist(pixel_values, bins=50, color='gray', alpha=0.7)
+        axes[i, 1].set_title(f"Histogram {i + 1}")
     except Exception as e:
         print(f"Error processing {file_path}: {str(e)}")
-plt.tight_layout()
+
+# Add a title to the figure
+fig.suptitle("Grayscale Images and Their Histograms", fontsize=16)
+
+# Adjust layout for better readability
+plt.tight_layout(rect=[0, 0, 1, 0.97])
+
+# Show the plots
 plt.show()
 
-for i in range(np.size(images)):
-    # Flatten the 2D grayscale image into a 1D array
-    pixel_values = images[0].flatten()
-            
-    # Count the occurrences of each pixel value and update the dictionary
-    for pixel_value in pixel_values:
-        if pixel_value in value_counts:
-            value_counts[pixel_value] += 1
-        else:
-            value_counts[pixel_value] = 1
-
-    values = np.array(list(value_counts.keys()))
-    counts = np.array(list(value_counts.values()))
-
-    plt.subplot(1, 3, i + 1)  # 1 row, 3 columns for a 1x3 grid
-    plt.bar(values, counts)
-    plt.title(f"Grayscale Value Counts Histogram {i + 1}")
-    plt.axis('off')
-    plt.show()
-
-# Create subplots
+# Create subplots for camel image
 fig1, axes1 = plt.subplots(1, 2, figsize=(10, 6))  # Create a subplot grid
 # Display greyscale
 axes1[0].imshow(camel_gray, cmap='gray')
