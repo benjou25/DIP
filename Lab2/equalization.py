@@ -12,13 +12,8 @@ if tif_image.ndim == 3:  # Check if the image has multiple channels
 else:
     tif_gray = tif_image
 
-# Scale grayscale values to integers between 0 and 255
-tif_gray_scaled = (tif_gray * 255).astype(np.uint8)
-# Invert the scaled values
-tif_gray_scaled = 255 - tif_gray_scaled
-
 # Calculate the histogram of the input image
-hist_original, bins_original = np.histogram(tif_gray_scaled, bins=256, range=(0, 255))
+hist_original, bins_original = np.histogram(tif_gray, bins=256, range=(0, 255))
 
 # Calculate the cumulative distribution function (CDF)
 cdf = np.cumsum(hist_original)
@@ -29,8 +24,8 @@ cdf_normalized = cdf / cdf[-1]
 # Create a lookup table to map pixel values
 equalization_lookup = (cdf_normalized * 255).astype(np.uint8)
 
-# Apply the lookup table to the image to perform histogram equalization
-equalized_image = equalization_lookup[tif_gray_scaled]
+# Apply the lookup table to the image to perform equalization
+equalized_image = equalization_lookup[tif_gray]
 
 # Perform histogram equalization using a built-in function
 equalized_image_builtin = exposure.equalize_hist(tif_gray)
@@ -44,7 +39,7 @@ cdf2_normalized = cdf2 / cdf2[-1]
 # Plot the original histogram
 plt.figure(figsize=(18, 4))
 plt.subplot(131)
-plt.hist(tif_gray_scaled.ravel(), bins=256, range=(0, 255))
+plt.hist(tif_gray.ravel(), bins=256, range=(0, 255))
 plt.title('Original Histogram')
 plt.xlabel('Pixel Value')
 plt.ylabel('Frequency')
