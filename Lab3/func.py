@@ -17,3 +17,13 @@ def my_gauss_filter(image, size, sigma):
     # Apply the filter using convolve2d
     filtered_image = convolve2d(image, kernel, mode='same')  
     return filtered_image
+
+def laplacefilter1(image):
+    h1 = np.array([[0,-1,0],[-1,4,-1],[0,-1,0]])
+    filtered_image = convolve2d(image, h1, mode='same')
+    return filtered_image
+
+def laplacefilter2(image):
+    h2 = np.array([[-1,-1,-1],[-1,8,-1],[-1,-1,-1]])
+    filtered_image = convolve2d(image, h2, mode='same')
+    return filtered_image
