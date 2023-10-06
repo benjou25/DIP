@@ -2,7 +2,6 @@ import numpy as np
 import func
 import matplotlib.pyplot as plt
 from skimage import io, color
-from scipy.ndimage import gaussian_filter
 import os
 
 # Directory containing your DICOM images

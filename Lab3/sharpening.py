@@ -14,6 +14,7 @@ files = [os.path.join(imdir, fname) for fname in os.listdir(imdir) if fname.ends
 # Create a figure for the subplots
 fig, axes = plt.subplots(len(files), 3, figsize=(12, 6 * len(files)))
 fig2, axes2 = plt.subplots(len(files), 3, figsize=(12, 6 * len(files)))
+fig3, axes3 = plt.subplots(len(files), 3, figsize=(12, 6 * len(files)))
 
 # Loop through and display all DICOM images
 for i, file_path in enumerate(files):
@@ -33,14 +34,14 @@ for i, file_path in enumerate(files):
     axes[i, 0].axis('off')
 
     # Apply average filter to the image
-    lp1_image = func.laplacefilter1(tif_float)
-    axes[i, 1].imshow(lp1_image, cmap='gray')  # Convert to uint8
+    lap1_image = func.laplacefilter1(tif_float)
+    axes[i, 1].imshow((lap1_image * 255).astype(np.uint8), cmap='gray')  # Convert to uint8
     axes[i, 1].set_title(f'laplace 1 {i + 1}')
     axes[i, 1].axis('off')
 
     # Apply gaussian filter
-    lp2_image = func.laplacefilter2(tif_float)
-    axes[i, 2].imshow(lp2_image, cmap='gray')  # Convert to uint8
+    lap2_image = func.laplacefilter2(tif_float)
+    axes[i, 2].imshow((lap2_image * 255).astype(np.uint8), cmap='gray')  # Convert to uint8
     axes[i, 2].set_title(f'laplace 2 {i + 1}')
     axes[i, 2].axis('off')
 
@@ -49,17 +50,37 @@ for i, file_path in enumerate(files):
     axes2[i, 0].set_title(f'Original {i + 1}')
     axes2[i, 0].axis('off')
 
-    # Sharpen Image
-    hipass = tif_float + lp1_image
-    axes2[i, 1].imshow(hipass, cmap='gray')  # Convert to uint8
-    axes2[i, 1].set_title(f'high pass average {i + 1}')
+    # sharpen with first filter
+    sharp1 = (tif_float + lap1_image) * 255
+    axes2[i, 1].imshow(sharp1.astype(np.uint8), cmap='gray')  # Convert to uint8
+    axes2[i, 1].set_title(f'sharpened 1 {i + 1}')
     axes2[i, 1].axis('off')
 
-    # Sharpen Image
-    hipass = tif_float + lp2_image
-    axes2[i, 2].imshow(hipass, cmap='gray')  # Convert to uint8
-    axes2[i, 2].set_title(f'high pass gauss {i + 1}')
+    # sharpen with second filter
+    sharp2 = (tif_float + lap2_image) * 255
+    axes2[i, 2].imshow(sharp2.astype(np.uint8), cmap='gray')  # Convert to uint8
+    axes2[i, 2].set_title(f'sharpened 2 {i + 1}')
     axes2[i, 2].axis('off')
+
+    # Original image
+    axes3[i, 0].imshow((tif_float * 255).astype(np.uint8), cmap='gray')  # Convert to uint8
+    axes3[i, 0].set_title(f'Original {i + 1}')
+    axes3[i, 0].axis('off')
+
+    # sharpen with high pass
+    hipass = tif_float - func.my_average_filter(tif_float, 11)
+    sharp3 = (tif_float + hipass) * 255
+    axes3[i, 1].imshow(sharp3.astype(np.uint8), cmap='gray')  # Convert to uint8
+    axes3[i, 1].set_title(f'high pass sharp {i + 1}')
+    axes3[i, 1].axis('off')
+
+    # Gaussian unsharp masking
+    blurred_image = gaussian_filter(tif_float, 2)
+    sharpened_image = (tif_float * 255).astype(np.uint8) + ((tif_float - blurred_image) * 255).astype(np.uint8)
+    sharpened_image = np.clip(sharpened_image, 0, 255).astype(np.uint8)
+    axes3[i, 2].imshow(sharpened_image, cmap='gray')
+    axes3[i, 2].set_title(f'gaussian sharp {i + 1}')
+    axes3[i, 2].axis('off')
 
 fig.suptitle("Images", fontsize=16)
 plt.show()
