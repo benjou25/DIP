@@ -38,7 +38,7 @@ for i, file_path in enumerate(files):
     axes[i, 1].axis('off')
 
     # Apply gaussian filter
-    gauss_image = func.my_gauss_filter(tif_float, 11, 0.85)
+    gauss_image = func.my_gauss_filter(tif_float, 11, 3)
     axes[i, 2].imshow(gauss_image, cmap='gray')  # No need to convert to uint8
     axes[i, 2].set_title(f'gauss filter {i + 1}')
     axes[i, 2].axis('off')
