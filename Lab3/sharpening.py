@@ -51,13 +51,13 @@ for i, file_path in enumerate(files):
     axes2[i, 0].axis('off')
 
     # sharpen with first filter
-    sharp1 = tif_float + lap1_image
+    sharp1 = tif_float + 0.5*lap1_image
     axes2[i, 1].imshow(sharp1, cmap='gray')  # No need to convert to uint8
     axes2[i, 1].set_title(f'sharpened 1 {i + 1}')
     axes2[i, 1].axis('off')
 
     # sharpen with second filter
-    sharp2 = tif_float + lap2_image
+    sharp2 = tif_float + 0.5*lap2_image
     axes2[i, 2].imshow(sharp2, cmap='gray')  # No need to convert to uint8
     axes2[i, 2].set_title(f'sharpened 2 {i + 1}')
     axes2[i, 2].axis('off')
