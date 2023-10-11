@@ -27,36 +27,36 @@ for i, file_path in enumerate(files):
 
     # Scale grayscale values to floats between 0 and 1
     tif_float = tif_gray.astype(np.float32) / np.max(tif_gray)
-    axes[i, 0].imshow((tif_float * 255).astype(np.uint8), cmap='gray')  # Convert to uint8
+    axes[i, 0].imshow(tif_float, cmap='gray')  # No need to convert to uint8
     axes[i, 0].set_title(f'Original {i + 1}')
     axes[i, 0].axis('off')
 
     # Apply average filter to the image
     avg_image = func.my_average_filter(tif_float, 11)
-    axes[i, 1].imshow((avg_image * 255).astype(np.uint8), cmap='gray')  # Convert to uint8
+    axes[i, 1].imshow(avg_image, cmap='gray')  # No need to convert to uint8
     axes[i, 1].set_title(f'average filter {i + 1}')
     axes[i, 1].axis('off')
 
     # Apply gaussian filter
     gauss_image = func.my_gauss_filter(tif_float, 11, 0.85)
-    axes[i, 2].imshow((gauss_image * 255).astype(np.uint8), cmap='gray')  # Convert to uint8
+    axes[i, 2].imshow(gauss_image, cmap='gray')  # No need to convert to uint8
     axes[i, 2].set_title(f'gauss filter {i + 1}')
     axes[i, 2].axis('off')
 
     # Original image
-    axes2[i, 0].imshow((tif_float * 255).astype(np.uint8), cmap='gray')  # Convert to uint8
+    axes2[i, 0].imshow(tif_float, cmap='gray')  # No need to convert to uint8
     axes2[i, 0].set_title(f'Original {i + 1}')
     axes2[i, 0].axis('off')
 
     # High pass filter with average filter subtract
-    hipass1 = (tif_float - avg_image) * 255
-    axes2[i, 1].imshow(hipass1.astype(np.uint8), cmap='gray')  # Convert to uint8
+    hipass1 = (tif_float - avg_image)
+    axes2[i, 1].imshow(hipass1, cmap='gray')  # No need to convert to uint8
     axes2[i, 1].set_title(f'high pass average {i + 1}')
     axes2[i, 1].axis('off')
 
     # High pass filter with gauss filter subtract
-    hipass2 = (tif_float - gauss_image) * 255
-    axes2[i, 2].imshow(hipass2.astype(np.uint8), cmap='gray')  # Convert to uint8
+    hipass2 = (tif_float - gauss_image)
+    axes2[i, 2].imshow(hipass2, cmap='gray')  # No need to convert to uint8
     axes2[i, 2].set_title(f'high pass gauss {i + 1}')
     axes2[i, 2].axis('off')
 
