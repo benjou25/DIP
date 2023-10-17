@@ -4,7 +4,6 @@ import numpy as np
 import scipy as sp
 import matplotlib.pyplot as plt
 import matplotlib.image as img
-import cv2
 import skimage        #<---
 from skimage import data
 
