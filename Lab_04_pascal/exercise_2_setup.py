@@ -22,7 +22,7 @@ print(gray_pixels.shape)
 
 # -------------------------------------------- generate the motion blur filter -----------------------------------------
 nFilter = 91
-angle = 30
+angle = 45
 my_filter = np.zeros((nFilter, nFilter))
 my_filter[nFilter//2, :] = 1.0 / nFilter
 my_filter = scipy.ndimage.rotate(my_filter, angle, reshape=False)
