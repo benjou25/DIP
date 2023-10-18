@@ -36,7 +36,7 @@ log_mag_fft = np.log(1 + mag_fft)
 
 # -------------------------- wiener filter ---------------------
 # Define the Wiener filter parameters
-K = 0.01  # A small constant to prevent division by zero
+K = 0.02  # A small constant to prevent division by zero
 H = np.fft.fft2(my_filter, (nFFT, nFFT))  # Fourier transform of the filter
 H_conj = np.conj(H)      # complex conjugate of the filter
 # Wiener filter formula
