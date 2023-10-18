@@ -36,14 +36,14 @@ log_mag_fft = np.log(1 + mag_fft)
 
 # -------------------------- wiener filter ---------------------
 # Define the Wiener filter parameters
-K = 0.02  # A small constant to prevent division by zero
+K = 0.01  # A small constant to prevent division by zero
 H = np.fft.fft2(my_filter, (nFFT, nFFT))  # Fourier transform of the filter
 H_conj = np.conj(H)      # complex conjugate of the filter
 # Wiener filter formula
 spec_rec = (H_conj / (np.abs(H) ** 2 + K)) * im_spect
 # Inverse Fourier transform to get the reconstructed image
 im_rec = scipy.fft.ifft2(spec_rec)
-im_rec = np.real(im_rec)[nFilter:nRows + nFilter, nFilter:nCols + nFilter]
+im_rec = np.real(im_rec)[:nRows, :nCols]
 # Fourier transform of the reconstructed image
 mag_spec_rec = np.abs(fft.fftshift(spec_rec))
 log_spec_rec = np.log(1 + mag_spec_rec)
