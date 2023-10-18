@@ -45,6 +45,7 @@ while np.sum(input_image) > 0:
     input_image = np.bitwise_xor(input_image,segment)   # subtract the detected segment from the input
 
 print ('Found Segments: ',len(segment_array))
+print('\nyou could count all white pixels and divide by 5*5 to get the number of 5x5 squares')
 
 # --------------------------------------------------------- display images ---------------------------------------------
 fig0 = plt.figure(1)
