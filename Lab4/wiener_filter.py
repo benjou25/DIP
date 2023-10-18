@@ -43,7 +43,7 @@ H_conj = np.conj(H)      # complex conjugate of the filter
 spec_rec = (H_conj / (np.abs(H) ** 2 + K)) * im_spect
 # Inverse Fourier transform to get the reconstructed image
 im_rec = scipy.fft.ifft2(spec_rec)
-im_rec = np.real(im_rec)[:nRows, :nCols]
+im_rec = np.real(im_rec)[:nRows-nFilter, :nCols-nFilter]
 # Fourier transform of the reconstructed image
 mag_spec_rec = np.abs(fft.fftshift(spec_rec))
 log_spec_rec = np.log(1 + mag_spec_rec)

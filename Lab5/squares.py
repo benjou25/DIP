@@ -22,9 +22,10 @@ im5 = ndimage.binary_dilation(eroded5, structure=ker5)
 eroded6 = ndimage.binary_erosion(bin_image, structure=ker6)
 im6 = ndimage.binary_dilation(eroded6, structure=ker6)
 
+# subtract from the squares >5 the squares >6 to get only squraes in shape 5x5
 only5 = np.bitwise_xor(im5,im6)
 
-# Iterate over the entire image and leave the loop empty
+# Iterate over the entire image and detect segments
 segments = []
 input_image = only5
 while np.sum(input_image) > 0:
@@ -32,18 +33,18 @@ while np.sum(input_image) > 0:
     segment = np.zeros((nRows, nCols), dtype=bool)
     for i in range(nRows):
         for j in range(nCols):
-            if(input_image[i,j] and search):
+            if(input_image[i,j] and search):            # find the seed pixel
                 search = False
                 segment[i,j] = 1
-            if(input_image[i,j] and segment[i-1,j]
-            or input_image[i,j] and segment[i+1,j]
+            if(input_image[i,j] and segment[i-1,j]      # find connected pixels and
+            or input_image[i,j] and segment[i+1,j]      # add them to the segment
             or input_image[i,j] and segment[i,j-1]
             or input_image[i,j] and segment[i,j+1]):
                 segment[i,j] = 1
-    segments.append(segment)
-    input_image = np.bitwise_xor(input_image,segment)
+    segments.append(segment)                            # append the found segment to the array
+    input_image = np.bitwise_xor(input_image,segment)   # subtract the detected segment from the input
 
-print (len(segments))
+print ('Found Segments: ',len(segments))
 
 # --------------------------------------------------------- display images ---------------------------------------------
 fig0 = plt.figure(1)
