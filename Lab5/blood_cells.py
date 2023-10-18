@@ -26,6 +26,15 @@ fill_image = ndimage.binary_fill_holes(clear_image)
 cells_segments, num_segments = ndimage.label(fill_image)
 print('found segments: ',num_segments)
 
+# --------------------- get segment pixel-sizes -----------------------------------
+segment_sizes = []
+for label in range(1, num_segments + 1):
+    # get the current segment
+    segment_mask = cells_segments == label
+    # Count the number of white pixels in the segment
+    num_pixels = np.sum(segment_mask)
+    segment_sizes.append(num_pixels)
+
 # --------------------------------------------------------- display images ---------------------------------------------
 fig0 = plt.figure(1)
 plt.subplot(2, 2, 1)
@@ -43,4 +52,11 @@ plt.imshow(fill_image, cmap='gray')
 plt.tight_layout()
 for ax in fig0.get_axes():
     ax.axis('off')
+plt.show()
+
+# Create a histogram of segment sizes
+plt.hist(segment_sizes, bins=20, color='red', alpha=0.7)
+plt.xlabel('Number of Pixels')
+plt.ylabel('Frequency')
+plt.title('Segment Sizes Histogram')
 plt.show()
