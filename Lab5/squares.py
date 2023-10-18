@@ -26,7 +26,7 @@ im6 = ndimage.binary_dilation(eroded6, structure=ker6)
 only5 = np.bitwise_xor(im5,im6)
 
 # Iterate over the entire image and detect segments
-segments = []
+segment_array = []
 input_image = only5
 while np.sum(input_image) > 0:
     search = True
@@ -41,10 +41,10 @@ while np.sum(input_image) > 0:
             or input_image[i,j] and segment[i,j-1]
             or input_image[i,j] and segment[i,j+1]):
                 segment[i,j] = 1
-    segments.append(segment)                            # append the found segment to the array
+    segment_array.append(segment)                       # append the found segment to the array
     input_image = np.bitwise_xor(input_image,segment)   # subtract the detected segment from the input
 
-print ('Found Segments: ',len(segments))
+print ('Found Segments: ',len(segment_array))
 
 # --------------------------------------------------------- display images ---------------------------------------------
 fig0 = plt.figure(1)
@@ -73,19 +73,19 @@ plt.show()
 fig1 = plt.figure(2)
 plt.subplot(2, 2, 1)
 plt.title('segment 1')
-plt.imshow(segments[0], cmap='gray')
+plt.imshow(segment_array[0], cmap='gray')
 
 plt.subplot(2, 2, 2)
 plt.title('segment 2')
-plt.imshow(segments[1], cmap='gray')
+plt.imshow(segment_array[1], cmap='gray')
 
 plt.subplot(2, 2, 3)
 plt.title('segment 3')
-plt.imshow(segments[2], cmap='gray')
+plt.imshow(segment_array[2], cmap='gray')
 
 plt.subplot(2, 2, 4)
 plt.title('segment 4')
-plt.imshow(segments[3], cmap='gray')
+plt.imshow(segment_array[3], cmap='gray')
 
 plt.tight_layout()
 for ax in fig1.get_axes():
