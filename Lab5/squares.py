@@ -71,19 +71,19 @@ plt.show()
 # ------------------------------- segments ------------------------------
 fig1 = plt.figure(2)
 plt.subplot(2, 2, 1)
-plt.title('original')
+plt.title('segment 1')
 plt.imshow(segments[0], cmap='gray')
 
 plt.subplot(2, 2, 2)
-plt.title('original')
+plt.title('segment 2')
 plt.imshow(segments[1], cmap='gray')
 
 plt.subplot(2, 2, 3)
-plt.title('original')
+plt.title('segment 3')
 plt.imshow(segments[2], cmap='gray')
 
 plt.subplot(2, 2, 4)
-plt.title('original')
+plt.title('segment 4')
 plt.imshow(segments[3], cmap='gray')
 
 plt.tight_layout()

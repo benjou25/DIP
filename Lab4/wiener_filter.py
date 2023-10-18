@@ -28,7 +28,7 @@ my_filter = ndimage.rotate(my_filter, angle, reshape=False)
 
 nRows = im_gray.shape[0]
 nCols = im_gray.shape[1]
-nFFT = 1024
+nFFT = 2048
 
 im_spect = fft.fft2(im_gray, (nFFT, nFFT))
 mag_fft = np.abs(fft.fftshift(im_spect))
