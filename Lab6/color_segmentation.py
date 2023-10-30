@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap, BoundaryNorm
 from PIL import Image
+from math import acos, sqrt
 
 # Load the images
 file_name = Path('.', 'pics', 'brainCells.tif')
@@ -14,7 +15,7 @@ R = np.array(rgb_cells)[:,:,0]
 G = np.array(rgb_cells)[:,:,1]
 B = np.array(rgb_cells)[:,:,2]
 
-# Create the CMY channels
+# create the CMY channels
 C = 255 - R
 M = 255 - G
 Y = 255 - B
