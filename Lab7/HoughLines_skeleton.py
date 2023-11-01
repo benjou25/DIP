@@ -37,8 +37,12 @@ class HoughLines():
     def __compute_normal_vectors__(self, degrees):
         normalVectors = np.empty((len(degrees), 2), dtype=float)
         for index, thetaDegrees in enumerate(degrees):
-            x = np.cos(np.deg2rad(thetaDegrees))
-            y = np.sin(np.deg2rad(thetaDegrees))
+            if thetaDegrees <= 90:
+                x = np.cos(np.deg2rad(thetaDegrees))
+                y = np.sin(np.deg2rad(thetaDegrees))
+            else:
+                x = np.cos(np.deg2rad(thetaDegrees-180))
+                y = np.sin(np.deg2rad(thetaDegrees-180))
             normalVectors[index, :] = np.array([x, y])
         return normalVectors
 
@@ -47,7 +51,7 @@ class HoughLines():
     def __vote_from_pixel__(self, imageCoordinateXY: np.ndarray, grayValue: int):
         for angleDegrees in np.arange(0, self.maxThetaDegrees):
             normal_vector = self.normalVectors[angleDegrees, :]
-            scalar = np.dot(normal_vector, imageCoordinateXY)
+            scalar = np.dot(imageCoordinateXY, normal_vector)
             radiusIndex = int(scalar)
             angleIndex = int(angleDegrees)
             self.votingSpace[angleIndex, radiusIndex] += grayValue
@@ -92,10 +96,10 @@ class HoughLines():
 
     def __draw_found_line__(self, img, houghPeakCoordinates, halfLength = 200, color=(255,255,255)):
         x, y = self.normalVectors[houghPeakCoordinates[1], :] * houghPeakCoordinates[0]
-        x1, y1= np.array([x, y]) + self.normalVectors[(houghPeakCoordinates[1]+90)%180, :] * halfLength
-        x2, y2 = np.array([x, y]) - self.normalVectors[(houghPeakCoordinates[1]+90)%180, :] * halfLength
-        startPoint = np.array([x, y])
-        endPoint = np.array([60, 60])
+        x1, y1= np.array([x, y]) - self.normalVectors[(houghPeakCoordinates[1]+90)%180, :] * halfLength
+        x2, y2 = np.array([x, y]) + self.normalVectors[(houghPeakCoordinates[1]+90)%180, :] * halfLength
+        startPoint = np.array([x1, y1])
+        endPoint = np.array([x2, y2])
         print('\n',startPoint)
         print(endPoint)
         cv.line(img, startPoint.astype(int), endPoint.astype(int), color = color, thickness = 1)
