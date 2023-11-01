@@ -1,6 +1,5 @@
 import os # Operating System
-
-import cv2 as cv# OpenCV
+import cv2 as cv # OpenCV
 import numpy as np # numeric computations package
 import matplotlib.pyplot as plt # Bilder und Graphen wie in MALAB plotten
 from skimage.feature.peak import peak_local_max
@@ -34,19 +33,23 @@ class HoughLines():
         self.maximaOnVotingSpace = self.__find_peaks__(self.votingSpace)
 
 
+    #-------------------- Task 1a ----------------------------
     def __compute_normal_vectors__(self, degrees):
         normalVectors = np.empty((len(degrees), 2), dtype=float)
         for index, thetaDegrees in enumerate(degrees):
-            foo = 0  # <----
-            normalVectors[index, :] = np.array([foo, foo])   # <----
+            x = np.cos(np.deg2rad(thetaDegrees))
+            y = np.sin(np.deg2rad(thetaDegrees))
+            normalVectors[index, :] = np.array([x, y])
         return normalVectors
 
 
+    #-------------------- Task 1b,c -----------------------------
     def __vote_from_pixel__(self, imageCoordinateXY: np.ndarray, grayValue: int):
         for angleDegrees in np.arange(0, self.maxThetaDegrees):
-            foo = 0  # <----
-            radiusIndex = foo  # <----
-            angleIndex = foo  # <----
+            normal_vector = self.normalVectors[angleDegrees, :]
+            scalar = np.dot(normal_vector, imageCoordinateXY)
+            radiusIndex = int(scalar)
+            angleIndex = int(angleDegrees)
             self.votingSpace[angleIndex, radiusIndex] += grayValue
 
 
@@ -88,9 +91,13 @@ class HoughLines():
 
 
     def __draw_found_line__(self, img, houghPeakCoordinates, halfLength = 200, color=(255,255,255)):
-        foo = 0   # <----
-        startPoint = foo   # <----
-        endPoint = foo   # <----
+        x, y = self.normalVectors[houghPeakCoordinates[1], :] * houghPeakCoordinates[0]
+        x1, y1= np.array([x, y]) + self.normalVectors[(houghPeakCoordinates[1]+90)%180, :] * halfLength
+        x2, y2 = np.array([x, y]) - self.normalVectors[(houghPeakCoordinates[1]+90)%180, :] * halfLength
+        startPoint = np.array([x, y])
+        endPoint = np.array([60, 60])
+        print('\n',startPoint)
+        print(endPoint)
         cv.line(img, startPoint.astype(int), endPoint.astype(int), color = color, thickness = 1)
 
 
