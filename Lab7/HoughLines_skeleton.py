@@ -52,8 +52,8 @@ class HoughLines():
         for angleDegrees in np.arange(0, self.maxThetaDegrees):
             normal_vector = self.normalVectors[angleDegrees, :]
             scalar = np.dot(imageCoordinateXY, normal_vector)
-            radiusIndex = int(scalar)
-            angleIndex = int(angleDegrees)
+            radiusIndex = int(np.round(scalar))
+            angleIndex = int(np.round(angleDegrees))
             self.votingSpace[angleIndex, radiusIndex] += grayValue
 
 
@@ -93,13 +93,13 @@ class HoughLines():
         plt.title("HoughtLines Voting Space: maxVote:{}".format(maxVote))
         plt.show()
 
-
+    #-------------------- Task 1f -----------------------------
     def __draw_found_line__(self, img, houghPeakCoordinates, halfLength = 200, color=(255,255,255)):
         x, y = self.normalVectors[houghPeakCoordinates[1], :] * houghPeakCoordinates[0]
         x1, y1= np.array([x, y]) - self.normalVectors[(houghPeakCoordinates[1]+90)%180, :] * halfLength
         x2, y2 = np.array([x, y]) + self.normalVectors[(houghPeakCoordinates[1]+90)%180, :] * halfLength
-        startPoint = np.array([x1, y1])
-        endPoint = np.array([x2, y2])
+        startPoint = np.round(np.array([x1, y1]))
+        endPoint = np.round(np.array([x2, y2]))
         print('\n',startPoint)
         print(endPoint)
         cv.line(img, startPoint.astype(int), endPoint.astype(int), color = color, thickness = 1)
