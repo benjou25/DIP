@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import cv2 as cv
+import otsu_skeleton as ots
 
 from scipy import ndimage as ndi
 
@@ -10,8 +11,7 @@ import skimage.feature as feature
 
 
 def compute_binary_image_otsu(image, show=False):
-    foo = 0
-    threshold, image_binary = (foo , foo) # <--
+    image_binary, variance ,threshold ,sep = ots.my_otsu(image)
     if show:
         plt.imshow(image_binary,'gray')
         plt.show()
@@ -51,19 +51,20 @@ def main():
 
     imageBinary = compute_binary_image_otsu(image, show=True)
     foo = 0
-    imageDistance = foo  # <--
-    peakCoords = foo  # <--
+    imageDistance = ndi.distance_transform_edt(imageBinary)
+    peakCoords = feature.peak_local_max(imageDistance)
+
 
     # Create a mask containing the seedpoints, 
-    mask = foo  # <--
-    mask[foo] = True  # <--
+    mask = np.zeros_like(imageBinary)
+    mask[peakCoords[:, 0], peakCoords[:, 1]] = True
     
     # Give the seedpoints different integer values they will be used to label the identified objects
-    seedMask, _ = foo # <--
+    seedMask, _ = ndi.label(mask)
 
     # Watershed algorithm grows the regions arround the seedpoints and labels them in a mask, the label is 
     # determined by the seedpoint label
-    labeled_regions = foo # <--
+    labeled_regions = segmentation.watershed(-imageDistance, seedMask, mask=imageBinary)
     labels = labeled_regions * imageBinary
 
     # Visualize the intermediate and final results
@@ -88,4 +89,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
