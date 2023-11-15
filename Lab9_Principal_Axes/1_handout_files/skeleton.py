@@ -126,8 +126,8 @@ cooMat = cooMat/count
 X = np.arange(cooMat.shape[1])
 Y = np.arange(cooMat.shape[0])
 X, Y = np.meshgrid(X, Y)
-fig = plt.figure(figsize=(16,9))
-ax = fig.gca(projection='3d')
+fig = plt.figure(figsize=(16, 9))
+ax = fig.add_subplot(111, projection='3d')
 surf = ax.plot_surface(X, Y, cooMat, rstride=1, cstride=1, cmap='jet', linewidth=0, antialiased=False)
 fig.colorbar(surf, shrink=0.5, aspect=5)
 plt.show()
@@ -140,9 +140,12 @@ homogenity = 0
 
 for ii in range(256):
     for jj in range(256):
-        energy = foo
-        contrast = foo
-        entropy = foo
-        homogenity = foo
-        
+        energy += (cooMat[ii, jj])**2
+        contrast += ((ii-jj)**2) * cooMat[ii,jj]
+        # Avoid taking the logarithm of zero
+        if cooMat[ii, jj] > 0:
+            entropy += cooMat[ii, jj] * np.log2(cooMat[ii, jj])
+        homogenity += cooMat[ii,jj] / (1 + np.abs(ii-jj))
+
+entropy = -entropy        
 print("energy: %5.5f\ncontrast: %5.5f\nentropy: %5.5f\nhomogenity: %5.5f"%(energy,contrast,entropy,homogenity))
