@@ -40,6 +40,7 @@ def my_otsu(image):
     between_class_variance_max = 0
     threshold = 0
     separability = 0
+    G_variance = 0
 
     for k in range(1, 256):
         class_a = hist[:k]
@@ -58,17 +59,16 @@ def my_otsu(image):
         
         # Calculate between-class variance
         between_class_variance = prob_a * (m_a - m_G) ** 2 + prob_b * (m_b - m_G) ** 2
-        G_variance = (k - m_G) ** 2
+        G_variance += hist[k]*(k - m_G) ** 2
         between_class_array[k] = between_class_variance
 
         if between_class_variance > between_class_variance_max:
             between_class_variance_max = between_class_variance
             threshold = k
-            separability = between_class_variance / G_variance
 
     # Apply the threshold to the image
     binary_image = image >= threshold
-    
+    separability = between_class_variance_max / G_variance
 
     return binary_image, between_class_array, threshold, separability
 
