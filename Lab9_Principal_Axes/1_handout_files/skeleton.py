@@ -27,8 +27,15 @@ points = np.argwhere(img_bone_gray > 0.5)
 #    points[:,1] ... y coordinates
 points = points[:, ::-1]
 
-foo = 0  # <--
-covarianceMatrix = foo  # <--
+center_x = np.mean(points[:,0])
+center_y = np.mean(points[:,1])
+x_0 = int(np.round(center_x))
+y_0 = int(np.round(center_y))
+center = [x_0 , y_0]
+
+points = points - center
+
+covarianceMatrix = np.cov(points, rowvar=False)
 
 
 # 3. Compute the eigen vector for the largest eigen value
@@ -39,17 +46,25 @@ eigV = V[:, idx]  # Eigen vector for largest eigen value
 # 4. Compute rotation that aligns the bone's dominant axis to the image's x-axis
 height, width = img_bone_gray.shape
 # 4.a) Method using the explicit rotation angle phi
-rotMatAffine = foo  # <--
+offset_x, offset_y = -50, 200
+rotation_angle = -np.arctan2(eigV[1], eigV[0])  # Calculate the rotation angle
+translation_offset = np.array([offset_x, offset_y])  # Replace offset_x and offset_y with your desired values
+rotMatAffine = np.array([[np.cos(rotation_angle), -np.sin(rotation_angle), translation_offset[0]],
+                        [np.sin(rotation_angle), np.cos(rotation_angle), translation_offset[1]]])
 
 # 5. Rotate the image
-img_bone_rot = cv2.warpAffine(img_bone_gray,rotMatAffine,(width,height), cv2.INTER_CUBIC + cv2.WARP_INVERSE_MAP)
+img_bone_rot = cv2.warpAffine(img_bone_gray, rotMatAffine, (width, height), cv2.INTER_CUBIC + cv2.WARP_INVERSE_MAP)
+plt.figure()
+plt.imshow(img_bone_rot, cmap='gray')
+plt.title('Rotated Object explicit')
+plt.show()
 
 # 6. Determine the bounding box for the aligned bone
 alignedBoneCoords = np.argwhere(img_bone_rot > 0.5)
-y1 = foo  # <--
-x1 = foo  # <--
-y2 = foo  # <--
-x2 = foo  # <--
+y1 = np.min(alignedBoneCoords[:, 0])
+x1 = np.min(alignedBoneCoords[:, 1])
+y2 = np.max(alignedBoneCoords[:, 0])
+x2 = np.max(alignedBoneCoords[:, 1])
 # 7. Draw the bonding box onto the image
 img_bone_rot = cv2.rectangle(img_bone_rot, (x1, y1), (x2, y2), color=1)
 
