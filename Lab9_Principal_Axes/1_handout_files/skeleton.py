@@ -78,7 +78,7 @@ plt.imshow(img_bone_rot, cmap='gray')
 plt.title('Rotated Object with Boundig Box')
 plt.show()
 
-
+foo = 0
 
 ###### Texture and Co-Ocurrence matrix #####
 img_mc1=plt.imread('mc1.tif')
@@ -104,15 +104,20 @@ M,N = img_ut.shape
 count=1
 for ii in range(1,M-1):
     for jj in range(1,N-1):
-        # <--
-        # <--
-        # <--
-        # <--
-        # <--
-        # <--
-        # <--
-        # <--
-        # <--
+        # Define the pixel values at the current and neighboring locations
+        p = img_ut[ii, jj]
+        
+        q = img_ut[ii, jj + 1]  # Right neighbor
+        cooMat[p, q] += 1
+
+        q = img_ut[ii + 1, jj]  # Bottom neighbor
+        cooMat[p, q] += 1
+
+        q = img_ut[ii + 1, jj + 1]  # Diagonal neighbor
+        cooMat[p, q] += 1
+
+        q = img_ut[ii - 1, jj + 1]  # Upper-right neighbor
+        cooMat[p, q] += 1
         count = count + 4 
 cooMat = cooMat/count
 
