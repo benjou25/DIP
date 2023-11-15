@@ -76,7 +76,9 @@ def main():
     ax[1].imshow(imageBinary, cmap=plt.cm.gray, interpolation='none')
     ax[1].set_title('Otsu: image_binary')
     ax[2].imshow(imageDistance/np.amax(imageDistance), cmap=plt.cm.jet, interpolation='none')
+    ax[2].set_title('Distance')
     ax[3].scatter(peakCoords[:, 1].reshape((-1,)), peakCoords[:, 0].reshape((-1,)), s=10, marker='o')
+    ax[3].set_title('Seedpoints')
     ax[4].imshow(labels, cmap=plt.cm.nipy_spectral, interpolation='none')
     ax[4].set_title('Separated objects')
 
