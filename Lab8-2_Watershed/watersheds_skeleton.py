@@ -50,9 +50,8 @@ def main():
         image=image[:,:,0]
 
     imageBinary = compute_binary_image_otsu(image, show=True)
-    foo = 0
     imageDistance = ndi.distance_transform_edt(imageBinary)
-    peakCoords = feature.peak_local_max(imageDistance)
+    peakCoords = feature.peak_local_max(imageDistance, 30)
 
 
     # Create a mask containing the seedpoints, 
