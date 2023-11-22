@@ -57,8 +57,8 @@ def classify(test_data, mean, covariance):
         feature_matrix = np.array(features[label])
         for feature_vector in feature_matrix:
             class_costs = []
-            for j in range(len(mean)):
-                class_costs.append(evaluateCost(feature_vector, mean[j], covariance[j]))
+            for c in range(len(mean)):
+                class_costs.append(evaluateCost(feature_vector, mean[c], covariance[c]))
             # Make a decision based on the minimum cost for each feature vector
             decision = np.argmin(class_costs)
             decisions.append(decision)
