@@ -29,8 +29,8 @@ def train(train_data):
     covariance = []
     for label in labels:
         feature_matrix = np.array(features[label])
-        pass
-        pass
+        mean.append(np.mean(feature_matrix, axis=0))
+        covariance.append(np.cov(feature_matrix, rowvar=False))
     return mean, covariance
 
 
@@ -40,15 +40,36 @@ def evaluateCost(feature_vector, m, c):
     # m     mean of the feature vectors for a class
     # c     covariance of the feature vectors of a class
     # Output
-    #   some scalar proportional to the logarithm fo the probability d_j(feature_vector)
-    pass
-    pass
+    #   some scalar proportional to the logarithm of the probability d_j(feature_vector)
+    # Mahalanobis distance calculation
+    diff = feature_vector - m
+    inv_covariance = np.linalg.inv(c)
+    mahalanobis_dist = np.dot(np.dot(diff, inv_covariance), diff.T)
+    return mahalanobis_dist
 
 
 def classify(test_data, mean, covariance):
-    pass
-    pass
-    pass
+    labels, features = prepare_data(test_data)
+    decisions = []
+
+    for label in labels:
+        class_costs = []
+        feature_matrix = np.array(features[label])
+        for j in range(len(mean)):
+            # Evaluate cost for each feature vector in the class
+            costs = [evaluateCost(feature_vector, mean[j], covariance[j]) for feature_vector in feature_matrix]
+            print('\n',costs)
+            # Use the minimum cost among all feature vectors in the class
+            class_costs.append(min(costs))
+
+        # Make a decision based on the minimum cost
+        decision = np.argmin(class_costs)
+        decisions.append(decision)
+
+    return decisions
+
+
+
 
 
 def computeConfusionMatrix(decisions, test_data):
@@ -64,6 +85,10 @@ def main():
     # Train: Compute mean and covariance for each object class from {0,1,2,3}
     # returns one list entry per object class
     mean, covariance = train(train_data)
+
+    for i in range(4):
+        print(f"\nmean {i+1}:", mean[i])
+        print(f"covar {i+1}:", covariance[i])
     
     # Decide: Compute decision for each feature vector from test_data
     # return a list of class indices from the set {0,1,2,3}
