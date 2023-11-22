@@ -45,6 +45,7 @@ def evaluateCost(feature_vector, m, c):
     diff = feature_vector - m
     inv_covariance = np.linalg.inv(c)
     mahalanobis_dist = np.dot(np.dot(diff, inv_covariance), diff.T)
+    
     return mahalanobis_dist
 
 
@@ -53,29 +54,30 @@ def classify(test_data, mean, covariance):
     decisions = []
 
     for label in labels:
-        class_costs = []
         feature_matrix = np.array(features[label])
-        for j in range(len(mean)):
-            # Evaluate cost for each feature vector in the class
-            costs = [evaluateCost(feature_vector, mean[j], covariance[j]) for feature_vector in feature_matrix]
-            print('\n',costs)
-            # Use the minimum cost among all feature vectors in the class
-            class_costs.append(min(costs))
-
-        # Make a decision based on the minimum cost
-        decision = np.argmin(class_costs)
-        decisions.append(decision)
+        for feature_vector in feature_matrix:
+            class_costs = []
+            for j in range(len(mean)):
+                class_costs.append(evaluateCost(feature_vector, mean[j], covariance[j]))
+            # Make a decision based on the minimum cost for each feature vector
+            decision = np.argmin(class_costs)
+            decisions.append(decision)
 
     return decisions
 
 
-
-
-
 def computeConfusionMatrix(decisions, test_data):
-    pass
-    pass
-    pass
+    num_classes = len(np.unique(np.array([dat.label for dat in test_data])))
+    confusion_matrix = np.zeros((num_classes, num_classes), dtype=int)
+
+    for true_label, decision in zip([dat.label for dat in test_data], decisions):
+        confusion_matrix[true_label, decision] += 1
+
+    # Normalize each row to represent percentages
+    row_sums = confusion_matrix.sum(axis=1, keepdims=True)
+    normalized_confusion_matrix = confusion_matrix / row_sums
+
+    return normalized_confusion_matrix
 
 
 def main():
@@ -93,11 +95,11 @@ def main():
     # Decide: Compute decision for each feature vector from test_data
     # return a list of class indices from the set {0,1,2,3}
     decisions = classify(test_data, mean, covariance)
-    print(decisions)
+    print('\nDecisions:', decisions)
     
     # Copmute the confusion matrix
     confusion_matrix = computeConfusionMatrix(decisions, test_data)
-    print(confusion_matrix)
+    print('\nConfusion Matrix:\n', confusion_matrix)
 
 if __name__ == "__main__":
     main()
