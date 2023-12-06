@@ -42,7 +42,7 @@ solution = np.linalg.solve(A,y)
 H = np.array([[solution[0], solution[1], solution[2]],
               [solution[3], solution[4], solution[5]],
               [solution[6], solution[7], 1]])
-print(solution)
+
 H = np.linalg.inv(H)
 # Undistort the image
 undistorted_img = cv2.warpPerspective(img_persp, H, (img_persp.shape[0], img_persp.shape[0]))
