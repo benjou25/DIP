@@ -73,9 +73,20 @@ while True:
         target_corners = np.float32([[0, 0], [0, target_height], [target_width, target_height], [target_width, 0]])
         matrix = cv2.getPerspectiveTransform(rect_corners.astype(np.float32), target_corners)
         result = cv2.warpPerspective(frame, matrix, (int(target_width), int(target_height)))
+        gray_result = cv2.cvtColor(result, cv2.COLOR_BGR2GRAY)
 
         # Convert the warped image to binary
-        _, binary_result = cv2.threshold(result, 128, 255, cv2.THRESH_BINARY)
+        _, binary_result = cv2.threshold(gray_result, 128, 255, cv2.THRESH_BINARY)
+
+        # Calculate the angles of the detected rectangle and the perspective transform
+        angle_detected = np.degrees(np.arctan2(strongest_rectangle[1][0, 1] - strongest_rectangle[0][0, 1],
+                                               strongest_rectangle[1][0, 0] - strongest_rectangle[0][0, 0]))
+        angle_matrix = np.degrees(np.arctan2(matrix[1, 0], matrix[0, 0]))
+        angle_sum = angle_matrix + angle_detected
+        
+        # condition for rotating the result to keep displayed perspective
+        if angle_sum >= 90 and angle_matrix <= -45:
+            binary_result = cv2.rotate(binary_result, cv2.ROTATE_90_CLOCKWISE)
 
         # Display the original frame with contours
         cv2.imshow('Webcam with Closed Rectangles', frame_contours)
@@ -86,7 +97,7 @@ while True:
         # Display the original frame with contours
         cv2.imshow('Webcam with Closed Rectangles', frame_contours)
 
-    # Break the loop if 'q' key is pressed
+    # Break the loop if esc key is pressed
     if cv2.waitKey(1) & 0xFF == 27:  # 27 is the ASCII code for the escape key
         break
 
